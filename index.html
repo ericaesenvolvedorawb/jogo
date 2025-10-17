@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroAprender Kids</title>
+    <style>
+        /* CSS - Estilos principais do aplicativo */
+        :root {
+            --primary: #4A90E2;
+            --secondary: #50E3C2;
+            --accent: #F5A623;
+            --light: #F8F9FA;
+            --dark: #333333;
+            --danger: #D0021B;
+            --success: #7ED321;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4A90E2, #50E3C2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 700px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Header */
+        .app-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* Conteúdo principal */
+        .app-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--light);
+        }
+        
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-section h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .avatar-selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .avatar-option {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .avatar-option:hover {
+            transform: scale(1.05);
+        }
+        
+        .avatar-option.selected {
+            border: 3px solid var(--accent);
+        }
+        
+        .avatar-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Menu de jogos */
+        .games-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .game-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-card.math {
+            border-top: 5px solid var(--primary);
+        }
+        
+        .game-card.portuguese {
+            border-top: 5px solid var(--success);
+        }
+        
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .game-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .game-description {
+            font-size: 0.8rem;
+            color: var(--dark);
+        }
+        
+        /* Tela de jogo */
+        .game-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-question {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .game-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .game-option {
+            padding: 15px;
+            background-color: var(--light);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .game-option:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .game-feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+        
+        .correct {
+            color: var(--success);
+        }
+        
+        .incorrect {
+            color: var(--danger);
+        }
+        
+        /* Configurações */
+        .settings-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+        }
+        
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Footer */
+        .app-footer {
+            background-color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+        
+        .nav-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+            transition: color 0.3s;
+        }
+        
+        .nav-button.active {
+            color: var(--primary);
+        }
+        
+        /* Progresso */
+        .progress-section {
+            background-color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success);
+            width: 65%;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .app-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Cabeçalho -->
+        <div class="app-header">
+            <div class="logo">
+                <span class="logo-icon">🧠</span>
+                NeuroAprender Kids
+            </div>
+            <div class="user-avatar" id="user-avatar">Z</div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="app-content" id="main-content">
+            <div class="welcome-section">
+                <h2>Olá, Zeca!</h2>
+                <p>Vamos aprender brincando?</p>
+                
+                <div class="avatar-selection">
+                    <div class="avatar-option selected" data-avatar="Z">
+                        <span class="avatar-icon">🐿️</span>
+                        <span>Zeca</span>
+                    </div>
+                    <div class="avatar-option" data-avatar="L">
+                        <span class="avatar-icon">🦉</span>
+                        <span>Lina</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-section">
+                <h3>Seu Progresso</h3>
+                <p>Matemática: 65%</p>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="games-menu">
+                <div class="game-card math" data-game="math1">
+                    <div class="game-icon">🔢</div>
+                    <div class="game-title">Carrinho de Compras</div>
+                    <div class="game-description">Aprenda matemática fazendo compras!</div>
+                </div>
+                
+                <div class="game-card portuguese" data-game="portuguese1">
+                    <div class="game-icon">📖</div>
+                    <div class="game-title">Sílaba Mágica</div>
+                    <div class="game-description">Forme palavras com sílabas!</div>
+                </div>
+                
+                <div class="game-card math" data-game="math2">
+                    <div class="game-icon">🧩</div>
+                    <div class="game-title">Quebra-Cabeça Numérico</div>
+                    <div class="game-description">Complete sequências numéricas!</div>
+                </div>
+                
+                <div class="game-card portuguese" data-game="portuguese2">
+                    <div class="game-icon">🔍</div>
+                    <div class="game-title">Detetive de Textos</div>
+                    <div class="game-description">Encontre informações nos textos!</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tela de Jogo - Exemplo Matemática -->
+        <div class="game-screen" id="math-game-screen">
+            <div class="game-header">
+                <button class="back-button" id="back-from-math">←</button>
+                <h3>Carrinho de Compras</h3>
+                <div></div> <!-- Espaço vazio para alinhamento -->
+            </div>
+            
+            <div class="game-content">
+                <div class="game-question" id="math-question">
+                    Você tem R$ 10,00. Um lápis custa R$ 2,00. Quantos lápis você pode comprar?
+                </div>
+                
+                <div class="game-options">
+                    <div class="game-option" data-answer="3">3 lápis</div>
+                    <div class="game-option" data-answer="5">5 lápis</div>
+                    <div class="game-option" data-answer="4">4 lápis</div>
+                    <div class="game-option" data-answer="6">6 lápis</div>
+                </div>
+                
+                <div class="game-feedback" id="math-feedback"></div>
+            </div>
+        </div>
+        
+        <!-- Tela de Jogo - Exemplo Português -->
+        <div class="game-screen" id="portuguese-game-screen">
+            <div class="game-header">
+                <button class="back-button" id="back-from-portuguese">←</button>
+                <h3>Sílaba Mágica</h3>
+                <div></div> <!-- Espaço vazio para alinhamento -->
+            </div>
+            
+            <div class="game-content">
+                <div class="game-question" id="portuguese-question">
+                    Complete a palavra: CA_ELA
+                </div>
+                
+                <div class="game-options">
+                    <div class="game-option" data-answer="M">M</div>
+                    <div class="game-option" data-answer="N">N</div>
+                    <div class="game-option" data-answer="S">S</div>
+                    <div class="game-option" data-answer="L">L</div>
+                </div>
+                
+                <div class="game-feedback" id="portuguese-feedback"></div>
+            </div>
+        </div>
+        
+        <!-- Tela de Configurações -->
+        <div class="settings-screen" id="settings-screen">
+            <div class="game-header">
+                <button class="back-button" id="back-from-settings">←</button>
+                <h3>Configurações</h3>
+                <div></div>
+            </div>
+            
+            <div class="settings-option">
+                <span>Fonte para Dislexia</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dyslexia-font">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="settings-option">
+                <span>Áudio para Instruções</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="audio-instructions" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="settings-option">
+                <span>Tempo Limitado</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="time-limit">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="settings-option">
+                <span>Cores de Alto Contraste</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="high-contrast">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Rodapé com Navegação -->
+        <div class="app-footer">
+            <button class="nav-button active" id="nav-home">🏠</button>
+            <button class="nav-button" id="nav-progress">📊</button>
+            <button class="nav-button" id="nav-settings">⚙️</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript - Lógica do aplicativo
+        
+        // Elementos da DOM
+        const mainContent = document.getElementById('main-content');
+        const mathGameScreen = document.getElementById('math-game-screen');
+        const portugueseGameScreen = document.getElementById('portuguese-game-screen');
+        const settingsScreen = document.getElementById('settings-screen');
+        const userAvatar = document.getElementById('user-avatar');
+        
+        // Botões de navegação
+        const navHome = document.getElementById('nav-home');
+        const navProgress = document.getElementById('nav-progress');
+        const navSettings = document.getElementById('nav-settings');
+        
+        // Botões de voltar
+        const backFromMath = document.getElementById('back-from-math');
+        const backFromPortuguese = document.getElementById('back-from-portuguese');
+        const backFromSettings = document.getElementById('back-from-settings');
+        
+        // Elementos de jogo
+        const mathOptions = document.querySelectorAll('#math-game-screen .game-option');
+        const portugueseOptions = document.querySelectorAll('#portuguese-game-screen .game-option');
+        const mathFeedback = document.getElementById('math-feedback');
+        const portugueseFeedback = document.getElementById('portuguese-feedback');
+        
+        // Configurações
+        const dyslexiaFont = document.getElementById('dyslexia-font');
+        const audioInstructions = document.getElementById('audio-instructions');
+        const timeLimit = document.getElementById('time-limit');
+        const highContrast = document.getElementById('high-contrast');
+        
+        // Seleção de avatar
+        const avatarOptions = document.querySelectorAll('.avatar-option');
+        
+        // Estado do aplicativo
+        let currentAvatar = 'Z';
+        let gameState = {
+            mathScore: 0,
+            portugueseScore: 0,
+            settings: {
+                dyslexiaFont: false,
+                audioInstructions: true,
+                timeLimit: false,
+                highContrast: false
+            }
+        };
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carregar estado salvo (se existir)
+            const savedState = localStorage.getItem('neuroAprenderState');
+            if (savedState) {
+                gameState = JSON.parse(savedState);
+                updateUIFromState();
+            }
+            
+            // Configurar event listeners
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Navegação principal
+            navHome.addEventListener('click', showMainContent);
+            navSettings.addEventListener('click', showSettings);
+            
+            // Botões de voltar
+            backFromMath.addEventListener('click', showMainContent);
+            backFromPortuguese.addEventListener('click', showMainContent);
+            backFromSettings.addEventListener('click', showMainContent);
+            
+            // Seleção de avatar
+            avatarOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remover seleção anterior
+                    avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Adicionar seleção atual
+                    this.classList.add('selected');
+                    
+                    // Atualizar avatar
+                    currentAvatar = this.getAttribute('data-avatar');
+                    userAvatar.textContent = currentAvatar;
+                    
+                    // Salvar estado
+                    saveState();
+                });
+            });
+            
+            // Cards de jogo
+            document.querySelectorAll('.game-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const gameType = this.getAttribute('data-game');
+                    
+                    if (gameType.startsWith('math')) {
+                        showMathGame();
+                    } else if (gameType.startsWith('portuguese')) {
+                        showPortugueseGame();
+                    }
+                });
+            });
+            
+            // Opções de jogo - Matemática
+            mathOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const answer = this.getAttribute('data-answer');
+                    checkMathAnswer(answer);
+                });
+            });
+            
+            // Opções de jogo - Português
+            portugueseOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const answer = this.getAttribute('data-answer');
+                    checkPortugueseAnswer(answer);
+                });
+            });
+            
+            // Configurações
+            dyslexiaFont.addEventListener('change', updateSettings);
+            audioInstructions.addEventListener('change', updateSettings);
+            timeLimit.addEventListener('change', updateSettings);
+            highContrast.addEventListener('change', updateSettings);
+        }
+        
+        function showMainContent() {
+            hideAllScreens();
+            mainContent.style.display = 'block';
+            updateNavigation('home');
+        }
+        
+        function showMathGame() {
+            hideAllScreens();
+            mathGameScreen.style.display = 'flex';
+            mathFeedback.textContent = '';
+            updateNavigation('game');
+        }
+        
+        function showPortugueseGame() {
+            hideAllScreens();
+            portugueseGameScreen.style.display = 'flex';
+            portugueseFeedback.textContent = '';
+            updateNavigation('game');
+        }
+        
+        function showSettings() {
+            hideAllScreens();
+            settingsScreen.style.display = 'flex';
+            updateNavigation('settings');
+        }
+        
+        function hideAllScreens() {
+            mainContent.style.display = 'none';
+            mathGameScreen.style.display = 'none';
+            portugueseGameScreen.style.display = 'none';
+            settingsScreen.style.display = 'none';
+        }
+        
+        function updateNavigation(active) {
+            // Remover classe active de todos os botões
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Adicionar classe active ao botão correspondente
+            if (active === 'home') {
+                navHome.classList.add('active');
+            } else if (active === 'settings') {
+                navSettings.classList.add('active');
+            }
+            // Nota: progresso não foi implementado completamente neste exemplo
+        }
+        
+        function checkMathAnswer(answer) {
+            const correctAnswer = '5';
+            
+            if (answer === correctAnswer) {
+                mathFeedback.textContent = 'Correto! Você pode comprar 5 lápis.';
+                mathFeedback.className = 'game-feedback correct';
+                gameState.mathScore += 10;
+            } else {
+                mathFeedback.textContent = 'Tente novamente! Lembre-se: 10 ÷ 2 = 5';
+                mathFeedback.className = 'game-feedback incorrect';
+            }
+            
+            saveState();
+        }
+        
+        function checkPortugueseAnswer(answer) {
+            const correctAnswer = 'S';
+            
+            if (answer === correctAnswer) {
+                portugueseFeedback.textContent = 'Correto! A palavra é CASA + ELA = CASAELA (casaela não existe, o correto é CASCAVEL, mas para fins didáticos...)';
+                portugueseFeedback.className = 'game-feedback correct';
+                gameState.portugueseScore += 10;
+            } else {
+                portugueseFeedback.textContent = 'Tente novamente! A palavra é CASCAVEL.';
+                portugueseFeedback.className = 'game-feedback incorrect';
+            }
+            
+            saveState();
+        }
+        
+        function updateSettings() {
+            gameState.settings.dyslexiaFont = dyslexiaFont.checked;
+            gameState.settings.audioInstructions = audioInstructions.checked;
+            gameState.settings.timeLimit = timeLimit.checked;
+            gameState.settings.highContrast = highContrast.checked;
+            
+            // Aplicar configurações visualmente
+            if (gameState.settings.dyslexiaFont) {
+                document.body.style.fontFamily = 'Comic Sans MS, cursive';
+            } else {
+                document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            }
+            
+            if (gameState.settings.highContrast) {
+                document.documentElement.style.setProperty('--primary', '#000000');
+                document.documentElement.style.setProperty('--light', '#FFFFFF');
+            } else {
+                document.documentElement.style.setProperty('--primary', '#4A90E2');
+                document.documentElement.style.setProperty('--light', '#F8F9FA');
+            }
+            
+            saveState();
+        }
+        
+        function updateUIFromState() {
+            // Atualizar configurações
+            dyslexiaFont.checked = gameState.settings.dyslexiaFont;
+            audioInstructions.checked = gameState.settings.audioInstructions;
+            timeLimit.checked = gameState.settings.timeLimit;
+            highContrast.checked = gameState.settings.highContrast;
+            
+            // Aplicar configurações
+            updateSettings();
+            
+            // Atualizar avatar
+            userAvatar.textContent = currentAvatar;
+            
+            // Atualizar progresso (simplificado)
+            const progressFill = document.querySelector('.progress-fill');
+            const totalScore = gameState.mathScore + gameState.portugueseScore;
+            const progressPercentage = Math.min(100, totalScore / 2);
+            progressFill.style.width = `${progressPercentage}%`;
+        }
+        
+        function saveState() {
+            localStorage.setItem('neuroAprenderState', JSON.stringify(gameState));
+            updateUIFromState();
+        }
+    </script>
+</body>
+</html>
